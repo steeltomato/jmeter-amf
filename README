@@ -1,10 +1,12 @@
 ### JMeter AMF Plugin
 -----------------------
 
-Welcome to the JMeter-AMF Plugin Project. This plugin gives JMeter the ability to load test Flex/Flash applications 
+Note: This project is currently in an alpha state. Source code will be added shortly. Click the Watch button for updates.
+
+Welcome to the JMeter-AMF Plugin Project. This plugin gives JMeter the ability to load test applications 
 using the AMF3 protocol. Main features:
 
-* Record AMF and HTTP traffic with a the AMF Proxy
+* Record AMF and HTTP traffic with the AMF Proxy Server
 * Translate AMF to XML for easy manipulation
 * Set override parameters to provide each virtual user with unique Client and Session IDs
 
@@ -12,7 +14,9 @@ using the AMF3 protocol. Main features:
 -----------------------
 
 * JMeter 2.x
-* JAR containing all pertinent remoting classes (VOs)
+* Application that utilizes BlazeDS for communication. 
+  * Want to see more libraries supported? Let me know in the issue tracker.
+* JAR(s) containing all necessary remoting classes (VOs)
 
 ### Installation
 -----------------------
@@ -28,5 +32,5 @@ using the AMF3 protocol. Main features:
   * A warning will be given _somewhere_.
   * Easy way: Select class files in Eclipse, Right-click -> Export, Select location and Finish
 
-4. Either copy remoting JAR to jmeter/lib/ext or add it to the classpath with the Test Plan node.
+4. Either copy remoting JAR(s) to jmeter/lib/ext or add to the classpath with the Test Plan node.
 
