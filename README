@@ -1,0 +1,32 @@
+### JMeter AMF Plugin
+-----------------------
+
+Welcome to the JMeter-AMF Plugin Project. This plugin gives JMeter the ability to load test Flex/Flash applications 
+using the AMF3 protocol. Main features:
+
+* Record AMF and HTTP traffic with a the AMF Proxy
+* Translate AMF to XML for easy manipulation
+* Set override parameters to provide each virtual user with unique Client and Session IDs
+
+### Requirements
+-----------------------
+
+* JMeter 2.x
+* JAR containing all pertinent remoting classes (VOs)
+
+### Installation
+-----------------------
+
+1. Click Downloads and grab the latest JMeter-AMF package.
+
+2. Copy jmeter-amf.jar to jmeter/lib/ext.
+
+3. Download the version of BlazeDS that your application uses and copy blazeds-common.jar and blazeds-core.jar to jmeter/lib/ext.
+
+3. Create a JAR containing any objects used in AMF Remoting, commonly referred to as VOs.
+  * If a class is missing, it will probably not be included in the captured XML or delivered AMF.
+  * A warning will be given _somewhere_.
+  * Easy way: Select class files in Eclipse, Right-click -> Export, Select location and Finish
+
+4. Either copy remoting JAR to jmeter/lib/ext or add it to the classpath with the Test Plan node.
+
