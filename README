@@ -8,7 +8,11 @@ using the AMF3 protocol. Main features:
 * Translate AMF to XML for easy manipulation
 * Set override parameters to provide each virtual user with unique Client and Session IDs
 
-Homepage: http://github.com/steeltomato/jmeter-amf
+Homepage:
+http://github.com/steeltomato/jmeter-amf
+
+If this project saved you a ton of time and money, or if you just want to buy me a beer, please donate to help keep it going. 
+https://github.com/steeltomato/jmeter-amf/wiki/Donate
 
 ### Requirements
 -----------------------
