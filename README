@@ -1,8 +1,6 @@
 ### JMeter AMF Plugin
 -----------------------
 
-Note: This project is currently in an alpha state. Source code will be added shortly. Click the Watch button for updates.
-
 Welcome to the JMeter-AMF Plugin Project. This plugin gives JMeter the ability to load test applications 
 using the AMF3 protocol. Main features:
 
@@ -10,13 +8,14 @@ using the AMF3 protocol. Main features:
 * Translate AMF to XML for easy manipulation
 * Set override parameters to provide each virtual user with unique Client and Session IDs
 
+Homepage: http://github.com/steeltomato/jmeter-amf
+
 ### Requirements
 -----------------------
 
 * JMeter 2.x
-* Application that utilizes BlazeDS for communication. 
+* Application that utilizes BlazeDS for AMF communication. 
   * Want to see more libraries supported? Let me know in the issue tracker.
-* JAR(s) containing all necessary remoting classes (VOs)
 
 ### Installation
 -----------------------
@@ -27,10 +26,24 @@ using the AMF3 protocol. Main features:
 
 3. Download the version of BlazeDS that your application uses and copy blazeds-common.jar and blazeds-core.jar to jmeter/lib/ext.
 
-3. Create a JAR containing any objects used in AMF Remoting, commonly referred to as VOs.
-  * If a class is missing, it will probably not be included in the captured XML or delivered AMF.
-  * A warning will be given _somewhere_.
-  * Easy way: Select class files in Eclipse, Right-click -> Export, Select location and Finish
+### Credits
+-----------------------
 
-4. Either copy remoting JAR(s) to jmeter/lib/ext or add to the classpath with the Test Plan node.
+This project was created and is maintained by Kenneth Hill (kennethjhill@gmail.com)
 
+Special thanks to the Apache Software Foundation and the contributors of the 
+Jakarta JMeter project. Without your hard work, this project obviously wouldn't be possible.
+
+Copyright 2011 the original author or authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

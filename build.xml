@@ -1,0 +1,82 @@
+<project name="JMeter" default="help" basedir=".">
+	<description>
+		JMeter AMF
+	</description>
+		
+	<property file="build.properties" />
+	
+	<property name="src.dir" value="src/protocol/amf" />
+	<property name="lib.dir" value="lib" />
+	<property name="lib.api" value="lib/api" />
+	<property name="lib.ext" value="lib/ext" />
+	<property name="build.dir" value="build" />
+	<property name="build.amf" value="build/protocol/amf" />
+	<property name="dist.dir" value="dist" />
+	
+	<property name="install.dir" value="/opt/jmeter-2.5/lib/ext" />
+	
+	<property name="dest.jar" value="bin" />
+	
+	<!-- Compilation Params -->
+	<property name="optimize" value="on" />
+	<property name="deprecation" value="off" />
+	<property name="target.java.version" value="1.5" />
+	<property name="src.java.version" value="1.5" />
+	<property name="encoding" value="UTF-8" />
+	<property name="includeAntRuntime" value="false" />
+	
+	<path id="srcpath">
+		<pathelement location="${src.dir}" />
+	</path>
+	
+	<path id="classpath">
+	    <fileset dir="${lib.dir}" includes="*.jar" />
+	    <fileset dir="${lib.api}" includes="*.jar" />
+		<fileset dir="${lib.ext}" includes="*.jar" />
+	</path>
+	
+	<target name="init">
+		<tstamp />
+		
+		<echo>JMeter-AMF v${release.version}</echo>
+	</target>
+	
+	<target name="help">
+	
+	</target>
+	
+	<target name="clean" depends="init">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete file="${dest.jar}/JMeter-AMF.jar" />
+	</target>
+	
+	<target name="compile" depends="init" description="Compile JMeter-AMF classes">
+		<mkdir dir="${build.amf}"/>
+		<javac srcdir="${src.dir}" destdir="${build.amf}" optimize="${optimize}" source="${src.java.version}" debug="on" target="${target.java.version}"
+				includeAntRuntime="${includeAntRuntime}" deprecation="${deprecation}" encoding="${encoding}">
+			<include name="**/*.java" />
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="package" depends="init, compile" description="JAR the plugin">
+		<jar jarfile="${dest.jar}/JMeter-AMF.jar"
+			basedir="${build.amf}">
+	    </jar>
+	</target>
+
+	<target name="install" depends="init, clean, compile, package" description="Copy JMeter-AMF to the JMeter install directory">
+		<delete file="${install.dir}/JMeter-AMF.jar" />
+		<copy file="${dest.jar}/JMeter-AMF.jar" tofile="${install.dir}/JMeter-AMF.jar" />
+	</target>
+	
+	<target name="dist" depends="init, clean, compile, package" description="Build a tarball for the current version">
+		<tar destfile="${dist.dir}/JMeter-AMF-${release.version}.tar.gz" 
+			 compression="gzip" 
+			 basedir="${basedir}"
+			 includes="${dest.jar}/JMeter-AMF.jar,README,LICENSE" />
+	</target>
+</project>
