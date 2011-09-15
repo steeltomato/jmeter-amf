@@ -25,6 +25,8 @@ import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
+import com.thoughtworks.xstream.mapper.Mapper;
 
 import flex.messaging.io.MessageDeserializer;
 import flex.messaging.io.MessageIOConstants;
@@ -167,7 +169,9 @@ public class AmfXmlConverter {
 			xstream.alias("RemotingMessage", RemotingMessage.class);
 			xstream.alias("ASObject", ASObject.class);
 			
-			//TODO: Better ASObject Converter
+			// Better ASObject Converter
+			Mapper mapper = xstream.getMapper();
+			xstream.registerConverter(new ASObjectConverter(mapper));
 		}
 		
 		return xstream;

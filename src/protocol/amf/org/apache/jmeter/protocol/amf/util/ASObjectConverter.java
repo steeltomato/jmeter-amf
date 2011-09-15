@@ -16,32 +16,105 @@
 
 package org.apache.jmeter.protocol.amf.util;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter;
+import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
+import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
+import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.mapper.Mapper;
 
 import flex.messaging.io.amf.ASObject;
 
-public class ASObjectConverter implements Converter {
+public class ASObjectConverter extends AbstractCollectionConverter {
+	
+	private static final String SERIAL_VER_1 = "1";
 
+	private final String currSerialVer = SERIAL_VER_1;
+
+	public ASObjectConverter(Mapper mapper) {
+		super(mapper);
+	}
+
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean canConvert(Class clazz) {
 		return clazz.equals(ASObject.class);
 	}
 
+	@SuppressWarnings({ "rawtypes" })
 	@Override
-	public void marshal(Object arg0, HierarchicalStreamWriter arg1,
-			MarshallingContext arg2) {
+	public void marshal(Object obj, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
+		ASObject asObj = (ASObject) obj;
 		
-	}
+		writer.addAttribute("serialVer", currSerialVer);
+		
+		if (asObj.getType() != null)
+			writer.addAttribute("objClass", asObj.getType());
+		
+		for (Iterator iterator = asObj.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            ExtendedHierarchicalStreamWriterHelper.startNode(writer, mapper().serializedClass(Map.Entry.class), Map.Entry.class);
 
-	@Override
-	public Object unmarshal(HierarchicalStreamReader arg0,
-			UnmarshallingContext arg1) {
-		
-		return null;
+            writeItem(entry.getKey(), context, writer);
+            writeItem(entry.getValue(), context, writer);
+
+            writer.endNode();
+        }
 	}
+	
+	// TODO: If serialization changes
+	//public void marshal_v1(Object obj, HierarchicalStreamWriter writer,
+	//		MarshallingContext context) {
+	//	
+	//}
+
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		ASObject asObj = new ASObject();
+		
+		String type = reader.getAttribute("objClass");
+		if (type != null) {
+			asObj.setType(type);
+		}
+		else {
+			// Don't know how to deal with this
+			return null;
+		}
+		
+        populateMap(reader, context, asObj);
+        
+        return asObj;
+    }
+	
+	// TODO: If serialization changes
+	//public Object unmarshal_v1(HierarchicalStreamReader reader, UnmarshallingContext context) {
+	//	return null;
+	//}
+
+    @SuppressWarnings("unchecked")
+	protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, ASObject map) {
+        while (reader.hasMoreChildren()) {
+            reader.moveDown();
+
+            reader.moveDown();
+            Object key = readItem(reader, context, map);
+            reader.moveUp();
+
+            reader.moveDown();
+            Object value = readItem(reader, context, map);
+            reader.moveUp();
+
+            map.put(key, value);
+
+            reader.moveUp();
+        }
+    }
 
 }

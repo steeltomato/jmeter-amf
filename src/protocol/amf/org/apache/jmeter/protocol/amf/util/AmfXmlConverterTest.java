@@ -1,3 +1,4 @@
+package org.apache.jmeter.protocol.amf.util;
 /*
 * Copyright 2011 the original author or authors.
 *
@@ -17,12 +18,11 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.jmeter.protocol.amf.util.AmfXmlConverter;
-import org.apache.jmeter.protocol.amf.util.SampleRequestVO;
 
 import com.thoughtworks.xstream.XStream;
 
 import flex.messaging.io.MessageIOConstants;
+import flex.messaging.io.amf.ASObject;
 import flex.messaging.io.amf.ActionMessage;
 import flex.messaging.io.amf.MessageBody;
 import flex.messaging.messages.RemotingMessage;
@@ -32,7 +32,9 @@ public class AmfXmlConverterTest {
 	public static void main(String[] args) {
 		//runXmlAmfXmlTest();
 		
-		runXmlAmfXmlMessageTest();
+		//runXmlAmfXmlMessageTest();
+		
+		testASObjectConverter();
 	}
 	
 	public static void runXmlAmfXmlTest() {
@@ -156,5 +158,25 @@ public class AmfXmlConverterTest {
 		requestMessage.addBody(body1);
 		
 		return requestMessage;
+	}
+	
+	public static void testASObjectConverter() {
+		ASObject asObj = new ASObject();
+		
+		Object[] objArr = {"thing", "other thing"};
+		
+		asObj.setType("com.test.RequestVO");
+		asObj.put("clientId", "abcd");
+		asObj.put("args", objArr);
+		
+		XStream xs = AmfXmlConverter.getXStream();
+		
+		String xml = xs.toXML(asObj);
+		
+		System.out.println("Result: \n"+xml);
+		
+		ASObject newASObj = (ASObject) xs.fromXML(xml);
+		
+		System.out.print("Rebuilt: \nType: "+newASObj.getType()+"\n"+newASObj.toString());
 	}
 }
