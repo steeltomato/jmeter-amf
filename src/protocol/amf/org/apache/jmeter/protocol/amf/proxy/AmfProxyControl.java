@@ -393,7 +393,9 @@ public class AmfProxyControl extends GenericController implements TestBean {
      * server's response while recording. A future consideration.
      */
     public synchronized void deliverSampler(HTTPSamplerBase sampler, TestElement[] subConfigs, SampleResult result) {
-        if (filterContentType(result) && filterUrl(sampler)) {
+    	boolean filterContentType = filterContentType(result);
+    	boolean filterUrl = filterUrl(sampler);
+        if (filterContentType && filterUrl) {
             JMeterTreeNode myTarget = findTargetControllerNode();
             @SuppressWarnings("unchecked") // OK, because find only returns correct element types
             Collection<ConfigTestElement> defaultConfigurations = (Collection<ConfigTestElement>) findApplicableElements(myTarget, ConfigTestElement.class, false);
@@ -412,7 +414,7 @@ public class AmfProxyControl extends GenericController implements TestBean {
         }
         else {
             if(log.isDebugEnabled()) {
-                log.debug("Sample excluded based on url or content-type: " + result.getUrlAsString() + " - " + result.getContentType());
+                log.debug("Sample excluded based on url ("+(filterContentType?"true":"false")+") or content-type ("+(filterUrl?"true":"false")+"): " + result.getUrlAsString() + " - " + result.getContentType());
             }
             result.setSampleLabel("["+result.getSampleLabel()+"]");
         }

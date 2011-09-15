@@ -40,11 +40,13 @@ import org.apache.jmeter.protocol.http.control.Header;
 import org.apache.jmeter.protocol.http.control.HeaderManager;
 import org.apache.jmeter.protocol.http.control.gui.HttpTestSampleGui;
 import org.apache.jmeter.protocol.http.gui.HeaderPanel;
+import org.apache.jmeter.protocol.http.proxy.HttpRequestHdr;
 import org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase;
 import org.apache.jmeter.protocol.http.sampler.HTTPSamplerFactory;
 import org.apache.jmeter.protocol.http.util.ConversionUtils;
 import org.apache.jmeter.protocol.http.util.HTTPConstants;
 import org.apache.jmeter.protocol.http.util.HTTPFileArg;
+import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.logging.LoggingManager;
@@ -112,7 +114,7 @@ public class AmfRequestHdr {
 
     private final Map<String, Header> headers = new HashMap<String, Header>();
 
-    private final HTTPSamplerBase sampler;
+    private HTTPSamplerBase sampler;
 
     private HeaderManager headerManager;
 
@@ -134,8 +136,20 @@ public class AmfRequestHdr {
     public AmfRequestHdr(HTTPSamplerBase sampler) {
         this.sampler = sampler;
     }
+    
+    public Map<String, Header> getHeaders() {
+    	return headers;
+    }
 
-    /**
+	public HTTPSamplerBase getSampler() {
+		return sampler;
+	}
+
+	public void setSampler(HTTPSamplerBase sampler) {
+		this.sampler = sampler;
+	}
+
+	/**
      * Parses a http header from a stream.
      *
      * @param in
@@ -255,20 +269,20 @@ public class AmfRequestHdr {
         return headerManager;
     }
 
-    public HTTPSamplerBase getSampler(Map<String, String> pageEncodings, Map<String, String> formEncodings)
+    public HTTPSamplerBase getSampler(Map<String, String> pageEncodings, Map<String, String> formEncodings, boolean amf)
             throws MalformedURLException, IOException {
-        // Damn! A whole new GUI just to instantiate a test element?
-        // Isn't there a beter way?
-        AmfRequestGui tempGui = new AmfRequestGui();
-        tempGui.setName("AMF Sampler G");
+    	
+        AbstractSamplerGui tempGui = amf ? new AmfRequestGui() : new HttpTestSampleGui();
+        tempGui.setName(amf ? "AMF Sampler" : "HTTP Sampler");
 
         sampler.setProperty(TestElement.GUI_CLASS, tempGui.getClass().getName());
 
         // Populate the sampler
-        populateSampler(pageEncodings, formEncodings);
+        populateSampler(pageEncodings, formEncodings, amf);
 
         tempGui.configure(sampler);
         tempGui.modifyTestElement(sampler);
+    	
         // Defaults
         sampler.setFollowRedirects(false);
         sampler.setUseKeepAlive(true);
@@ -303,7 +317,7 @@ public class AmfRequestHdr {
         return null;
     }
 
-    private void populateSampler(Map<String, String> pageEncodings, Map<String, String> formEncodings)
+    private void populateSampler(Map<String, String> pageEncodings, Map<String, String> formEncodings, boolean amf)
             throws MalformedURLException, UnsupportedEncodingException {
         sampler.setDomain(serverName());
         if (log.isDebugEnabled()) {
@@ -441,13 +455,12 @@ public class AmfRequestHdr {
                 // but maybe we should only parse arguments if the content type is as expected
                 sampler.parseArguments(postData.trim(), contentEncoding); //standard name=value postData
             } else if (postData.length() > 0) {
-            	if (AmfRequest.AMF_CONTENT_TYPE.equals(contentType)) {
+            	if (amf) {
             		//sampler.setProperty(AmfSampler.RAWAMF, postData);
             		
             		// If AMF, attempt to convert it to XML
-                    if (postData != null) {
+                    if (postData != null && postData.length() > 0) {
                     	String xml = AmfXmlConverter.convertAmfMessageToXml(postData.getBytes());
-log.debug("Captured: \n"+xml);
                     	sampler.setProperty(AmfRequest.AMFXML, xml);
                     }
 

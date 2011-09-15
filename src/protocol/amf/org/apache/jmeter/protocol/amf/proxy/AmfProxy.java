@@ -48,6 +48,7 @@ import org.apache.jmeter.protocol.amf.sampler.AmfRequestFactory;
 import org.apache.jmeter.protocol.amf.util.AmfXmlConverter;
 import org.apache.jmeter.protocol.http.control.HeaderManager;
 import org.apache.jmeter.protocol.http.parser.HTMLParseException;
+import org.apache.jmeter.protocol.http.proxy.HttpRequestHdr;
 import org.apache.jmeter.protocol.http.proxy.Proxy;
 import org.apache.jmeter.protocol.http.proxy.ProxyControl;
 import org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase;
@@ -175,20 +176,24 @@ public class AmfProxy extends Thread {
 
     /**
      * Main processing method for the Proxy object
+     * 
+     * TODO: Find a better way to switch between AMF and HTTP hdr/samplers, this is not very clean
      */
     @Override
     public void run() {
+    	String httpSamplerName = target.getSamplerTypeName();
+    	
         // Instantiate the sampler
-    	// TODO: HTTPSamplers for non-amf requests
+    	boolean amfMode = true;
         HTTPSamplerBase sampler = AmfRequestFactory.newInstance();
-
         AmfRequestHdr request = new AmfRequestHdr(sampler);
+        
         SampleResult result = null;
         HeaderManager headers = null;
 
         try {
             // Parse only first line
-            request.parse(new BufferedInputStream(clientSocket.getInputStream()));
+        	request.parse(new BufferedInputStream(clientSocket.getInputStream()));
             outStreamClient = clientSocket.getOutputStream();
 
             if ((request.getMethod().startsWith(HTTPConstants.CONNECT)) && (outStreamClient != null)) {
@@ -208,10 +213,25 @@ public class AmfProxy extends Thread {
                 request.parse(new BufferedInputStream(clientSocket.getInputStream()));
             }
             
-
-            // Populate the sampler. It is the same sampler as we sent into
-            // the constructor of the HttpRequestHdr instance above
-            request.getSampler(pageEncodings, formEncodings);
+            // If this is not an AMF request, fall back to normal HTTP sampling
+            if (request.getHeaders().containsKey("content-type") && request.getHeaders().get("content-type").getValue().contains("application/x-amf")) {
+            	log.debug("Sampling AMF");
+            }
+            else {
+            	log.debug("Sampling HTTP");
+            	amfMode = false;
+            	sampler = HTTPSamplerFactory.newInstance(httpSamplerName);
+            	request.setSampler(sampler);
+            }
+            
+            // Populate the sampler
+            if (amfMode) {
+            	request.getSampler(pageEncodings, formEncodings, true);
+            }
+            else {
+            	request.getSampler(pageEncodings, formEncodings, false);
+            }
+            
             
             /*
              * Create a Header Manager to ensure that the browsers headers are
@@ -237,7 +257,7 @@ public class AmfProxy extends Thread {
                 }
             }
             sampler.threadStarted(); // Needed for HTTPSampler2
-            result = sampler.sample();
+            result = sampler.sample(); // TODO: Why isn't method or url set in the HTTP sampler?
 
             /*
              * If we're dealing with text data, and if we're spoofing https,

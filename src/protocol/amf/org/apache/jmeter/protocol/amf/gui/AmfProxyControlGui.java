@@ -567,8 +567,10 @@ public class AmfProxyControlGui extends LogicControllerGui implements JMeterGUIC
     }
 
     private JPanel createHTTPSamplerPanel() {
-        DefaultComboBoxModel m = new DefaultComboBoxModel();
-        m.addElement("AMF"); // TODO: Maybe AMF3/AMF0?
+    	DefaultComboBoxModel m = new DefaultComboBoxModel();
+        for (String s : HTTPSamplerFactory.getImplementations()){
+            m.addElement(s);
+        }
         samplerTypeName = new JComboBox(m);
         samplerTypeName.setSelectedIndex(0);
         samplerTypeName.addItemListener(this);
