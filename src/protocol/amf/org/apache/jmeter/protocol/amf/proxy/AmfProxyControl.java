@@ -76,7 +76,7 @@ import org.apache.oro.text.regex.Perl5Compiler;
 /**
  * Class handles storing of generated samples, etc
  */
-public class AmfProxyControl extends GenericController implements TestBean {
+public class AmfProxyControl extends GenericController {
 
     private static final Logger log = LoggingManager.getLoggerForClass();
 
