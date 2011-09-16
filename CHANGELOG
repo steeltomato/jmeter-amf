@@ -1,0 +1,10 @@
+Changelog
+---------------------
+
+### Version 0.9.1
+* Automatically switch between AMF and HTTP samplers based on content type
+* Custom converter for ASObject. This is not backwards compatible but future changes to the converter will be versioned
+
+### Version 0.9
+* Initial public release
+* Plugin is usable at this stage, but needs testing to be considered stable
