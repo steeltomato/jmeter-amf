@@ -44,6 +44,8 @@ import org.apache.log.Logger;
 
 import flex.messaging.io.MessageIOConstants;
 
+// TODO: Take out the HTTP defaults - they are handled by any HTTP Request Defaults config
+
 /**
  * JMeter configuration GUI component that provides configuration support
  * for the AmfSampler.
@@ -54,8 +56,6 @@ public class AmfRequestDefaultsGui extends AbstractConfigGui implements ActionLi
 	private static final long serialVersionUID = 1L;
 
     private static final Logger log = LoggingManager.getLoggerForClass();
-    
-    private UrlConfigGui urlConfigGui;
 
     private JComboBox objectEncodingCombo;
     
@@ -77,9 +77,6 @@ public class AmfRequestDefaultsGui extends AbstractConfigGui implements ActionLi
         VerticalPanel centerPanel = new VerticalPanel();
         
         centerPanel.add(getAmfRequestPanel());
-        
-        urlConfigGui = new UrlConfigGui(false, false);
-        centerPanel.add(urlConfigGui);
         
         add(centerPanel, BorderLayout.CENTER);
     }
@@ -106,7 +103,6 @@ public class AmfRequestDefaultsGui extends AbstractConfigGui implements ActionLi
 	@Override
     public void configure(TestElement element) {
 		super.configure(element);
-        urlConfigGui.clear();
         
         // Configure AMF request specific properties
         objectEncodingCombo.setSelectedItem(element.getPropertyAsString(AmfRequest.OBJECT_ENCODING_VERSION));
@@ -136,9 +132,7 @@ public class AmfRequestDefaultsGui extends AbstractConfigGui implements ActionLi
     @Override
 	public void modifyTestElement(TestElement element) {
 		ConfigTestElement cfg = (ConfigTestElement) element;
-		ConfigTestElement urlEl = (ConfigTestElement) urlConfigGui.createTestElement();
 		cfg.clear();
-		cfg.addConfigElement(urlEl);
 		super.configureTestElement(element);
         
 		// Set AMF properties
@@ -148,7 +142,6 @@ public class AmfRequestDefaultsGui extends AbstractConfigGui implements ActionLi
     }
 	
     public void clear() {
-        urlConfigGui.clear();
         propertyOverrides.clear();
     }
 
