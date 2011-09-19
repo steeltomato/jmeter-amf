@@ -17,6 +17,7 @@
 package org.apache.jmeter.protocol.amf.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -185,6 +186,7 @@ public class AmfRequestDefaultsGui extends AbstractConfigGui implements ActionLi
     
     private final JPanel getPropertyOverridesPanel() {
     	propertyOverrides = new ArgumentsPanel("Value Replacement (name: search string, value: replace string)");
+    	propertyOverrides.setPreferredSize(new Dimension(0, 350));
     	
     	return propertyOverrides;
     }

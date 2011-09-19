@@ -139,12 +139,11 @@ public class AmfRequest extends HTTPSampler2 implements Interruptible {
         
         String amfXml = getAmfXml();
         
-        log.debug("Pre-override XML: \n"+amfXml);
-        
         // Replace properties with override values, if they exist
         amfXml = overrideProperties(amfXml);
         
-        log.debug("Final XML: \n"+amfXml);
+        if (log.isDebugEnabled())
+        	log.debug("AMF Sample XML: \n"+amfXml);
         
         // Create an AMF request from the XML and add it as the POST request body
         byte[] amfMessage = AmfXmlConverter.convertXmlToAmfMessage(amfXml);
@@ -272,7 +271,7 @@ public class AmfRequest extends HTTPSampler2 implements Interruptible {
     		String findStr = arg.getKey();
     		String replaceStr = arg.getValue();
     		
-    		log.debug("Replacing \""+findStr+"\" with \""+replaceStr+"\"");
+    		//log.debug("Replacing \""+findStr+"\" with \""+replaceStr+"\"");
     		
     		newXml = newXml.replace(findStr, replaceStr);
     	}
