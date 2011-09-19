@@ -18,11 +18,16 @@ package org.apache.jmeter.protocol.amf.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -49,7 +54,11 @@ public class AmfRequestGui extends AbstractSamplerGui {
 	
 	private JComboBox objectEncodingCombo;
 	
-    private JLabeledTextArea amfXml;
+    private JFrame xmlEditor;
+    
+    private StringBuffer amfXml;
+    
+    private JLabel xmlSize;
 
     public AmfRequestGui() {
         init();
@@ -70,6 +79,8 @@ public class AmfRequestGui extends AbstractSamplerGui {
     private void init() {
         setLayout(new BorderLayout(0, 5));
         setBorder(makeBorder());
+        
+        amfXml = new StringBuffer();
 
         add(makeTitlePanel(), BorderLayout.NORTH);
 
@@ -92,8 +103,9 @@ public class AmfRequestGui extends AbstractSamplerGui {
         super.configure(element);
         urlConfigGui.configure(element);
 
+        amfXml.setLength(0);
+        amfXml.append(element.getPropertyAsString(AmfRequest.AMFXML));
         objectEncodingCombo.setSelectedItem(element.getPropertyAsString(AmfRequest.OBJECT_ENCODING_VERSION));
-        amfXml.setText(element.getPropertyAsString(AmfRequest.AMFXML));
     }
 
     /**
@@ -116,7 +128,7 @@ public class AmfRequestGui extends AbstractSamplerGui {
         super.configureTestElement(element);
         
         element.setProperty(AmfRequest.OBJECT_ENCODING_VERSION, String.valueOf(objectEncodingCombo.getSelectedItem()));
-        element.setProperty(AmfRequest.AMFXML, amfXml.getText(), "");
+        element.setProperty(AmfRequest.AMFXML, amfXml.toString(), "");
     }
 
     /**
@@ -134,55 +146,53 @@ public class AmfRequestGui extends AbstractSamplerGui {
     public void clearGui() {
         super.clearGui();
         urlConfigGui.clear();
-        amfXml.setText("");
+        amfXml.setLength(0);
     }
 
     
     protected final JPanel getAmfRequestPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "AMF Request")); // $NON-NLS-1$
 
-        panel.add(getObjectEncodingPanel(), BorderLayout.NORTH);
-        panel.add(getAmfXmlPanel(), BorderLayout.CENTER);
+        List<String> values = new ArrayList<String>();
+        values.add("AMF"+String.valueOf(MessageIOConstants.AMF3));
+
+        objectEncodingCombo = new JComboBox(values.toArray());
+        objectEncodingCombo.setEditable(false);
+        
+        panel.add(objectEncodingCombo);
+        
+        JButton editXml = new JButton("Edit XML");
+        editXml.addActionListener(new ActionListener() {
+			@SuppressWarnings("serial")
+			public void actionPerformed(ActionEvent e) {
+        		openXmlEditor();
+        	}
+        });
+        panel.add(editXml);
+        
+        xmlSize = new JLabel();
+        panel.add(xmlSize);
+        
+        updateXmlBytes();
         
         return panel;
     }
     
-    protected JPanel getAmfXmlPanel() {
-        amfXml = new JLabeledTextArea("XML Representation"); // $NON-NLS-1$
-        return amfXml;
+    @SuppressWarnings("serial")
+	private void openXmlEditor() {
+    	xmlEditor = new AmfXmlEditorGui(amfXml) {
+			public void onSave() {
+				updateXmlBytes();
+			}
+		};
+		xmlEditor.pack();
+		xmlEditor.setVisible(true);
     }
     
-    protected final JPanel getObjectEncodingPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(getObjectEncodingVersionPanel(), BorderLayout.NORTH);
-        return panel;
-    }
-    
-    /**
-     * Create a panel with GUI components allowing the user to select an
-     * AMF Object Encoding Version.
-     *
-     * @return a panel containing the relevant components
-     */
-    protected JPanel getObjectEncodingVersionPanel() {
-    	
-        List<String> values = new ArrayList<String>();
-        values.add("AMF"+String.valueOf(MessageIOConstants.AMF3));
-
-        JLabel label = new JLabel("AMF Encoding"); // $NON-NLS-1$
-
-        objectEncodingCombo = new JComboBox(values.toArray());
-        objectEncodingCombo.setEditable(false);
-        label.setLabelFor(objectEncodingCombo);
-
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.add(label);
-        panel.add(objectEncodingCombo);
-
-        return panel;
+    private void updateXmlBytes() {
+    	xmlSize.setText("("+amfXml.length()+" chars)");
     }
 }
