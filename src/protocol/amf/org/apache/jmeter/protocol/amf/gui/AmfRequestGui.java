@@ -106,6 +106,8 @@ public class AmfRequestGui extends AbstractSamplerGui {
         amfXml.setLength(0);
         amfXml.append(element.getPropertyAsString(AmfRequest.AMFXML));
         objectEncodingCombo.setSelectedItem(element.getPropertyAsString(AmfRequest.OBJECT_ENCODING_VERSION));
+        
+        updateXmlBytes();
     }
 
     /**
@@ -175,8 +177,6 @@ public class AmfRequestGui extends AbstractSamplerGui {
         
         xmlSize = new JLabel();
         panel.add(xmlSize);
-        
-        updateXmlBytes();
         
         return panel;
     }
