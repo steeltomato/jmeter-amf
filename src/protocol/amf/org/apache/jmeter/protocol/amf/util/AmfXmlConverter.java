@@ -26,6 +26,7 @@ import org.apache.log.Logger;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.mapper.Mapper;
 
+import flex.messaging.io.ClassAliasRegistry;
 import flex.messaging.io.MessageDeserializer;
 import flex.messaging.io.SerializationContext;
 import flex.messaging.io.amf.ASObject;
@@ -37,7 +38,9 @@ import flex.messaging.io.amf.AmfMessageDeserializer;
 import flex.messaging.io.amf.AmfMessageSerializer;
 import flex.messaging.io.amf.MessageBody;
 import flex.messaging.io.amf.MessageHeader;
+import flex.messaging.messages.AcknowledgeMessageExt;
 import flex.messaging.messages.CommandMessage;
+import flex.messaging.messages.CommandMessageExt;
 import flex.messaging.messages.RemotingMessage;
 
 public class AmfXmlConverter {
@@ -136,6 +139,11 @@ public class AmfXmlConverter {
     	ActionContext actionContext = new ActionContext();
     	SerializationContext serializationContext = new SerializationContext();
     	
+    	// Class aliases for deserialization, mimics registerClassAlias in Flex
+    	ClassAliasRegistry aliases = ClassAliasRegistry.getRegistry();
+    	aliases.registerAlias("DSC", "flex.messaging.messages.CommandMessageExt");
+    	aliases.registerAlias("DSK", "flex.messaging.messages.AcknowledgeMessageExt");
+    	
     	// TODO: Maybe let users change these options if they want?
     	serializationContext.createASObjectForMissingType = true;
     	//serializationContext.instantiateTypes = false;
@@ -143,7 +151,7 @@ public class AmfXmlConverter {
     	ByteArrayInputStream bin = new ByteArrayInputStream(amf);
         
         ActionMessage message = new ActionMessage();
-        actionContext.setRequestMessage(message);
+        actionContext.setRequestMessage(message); // Is this necessary, what does it do?
         
         MessageDeserializer deserializer = new AmfMessageDeserializer();
         deserializer.initialize(serializationContext, bin, null);
@@ -167,6 +175,8 @@ public class AmfXmlConverter {
 			xstream.alias("RemotingMessage", RemotingMessage.class);
 			xstream.alias("CommandMessage", CommandMessage.class);
 			xstream.alias("ASObject", ASObject.class);
+			xstream.alias("DSC", CommandMessageExt.class);
+			xstream.alias("DSK", AcknowledgeMessageExt.class);
 			
 			// Better ASObject Converter
 			Mapper mapper = xstream.getMapper();
