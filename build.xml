@@ -1,4 +1,4 @@
-<project name="JMeter" default="help" basedir=".">
+<project name="JMeter-AMF" default="help" basedir=".">
 	<description>
 		JMeter AMF
 	</description>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="build/protocol/amf" path="src/protocol/amf"/>
-	<classpathentry kind="src" output="build/test/src" path="test/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jakarta-jmeter"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
@@ -65,5 +64,6 @@
 	<classpathentry kind="lib" path="lib/ext/ApacheJMeter_report.jar"/>
 	<classpathentry kind="lib" path="lib/ext/ApacheJMeter_tcp.jar"/>
 	<classpathentry kind="lib" path="lib/junit/test.jar"/>
+	<classpathentry kind="lib" path="lib/ext/JMeterPlugins.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
