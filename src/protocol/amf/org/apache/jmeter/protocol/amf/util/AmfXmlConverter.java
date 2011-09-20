@@ -18,18 +18,15 @@ package org.apache.jmeter.protocol.amf.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.mapper.Mapper;
 
 import flex.messaging.io.MessageDeserializer;
-import flex.messaging.io.MessageIOConstants;
 import flex.messaging.io.SerializationContext;
 import flex.messaging.io.amf.ASObject;
 import flex.messaging.io.amf.ActionContext;
@@ -39,8 +36,8 @@ import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfMessageDeserializer;
 import flex.messaging.io.amf.AmfMessageSerializer;
 import flex.messaging.io.amf.MessageBody;
-import flex.messaging.io.amf.client.AMFConnection.HttpResponseInfo;
-import flex.messaging.io.amf.client.exceptions.ServerStatusException;
+import flex.messaging.io.amf.MessageHeader;
+import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.RemotingMessage;
 
 public class AmfXmlConverter {
@@ -141,7 +138,7 @@ public class AmfXmlConverter {
     	
     	// TODO: Maybe let users change these options if they want?
     	serializationContext.createASObjectForMissingType = true;
-    	serializationContext.instantiateTypes = false;
+    	//serializationContext.instantiateTypes = false;
     	
     	ByteArrayInputStream bin = new ByteArrayInputStream(amf);
         
@@ -165,8 +162,10 @@ public class AmfXmlConverter {
 			xstream = new XStream();
 			
 			xstream.alias("ActionMessage", ActionMessage.class);
+			xstream.alias("MessageHeader", MessageHeader.class);
 			xstream.alias("MessageBody", MessageBody.class);
 			xstream.alias("RemotingMessage", RemotingMessage.class);
+			xstream.alias("CommandMessage", CommandMessage.class);
 			xstream.alias("ASObject", ASObject.class);
 			
 			// Better ASObject Converter
