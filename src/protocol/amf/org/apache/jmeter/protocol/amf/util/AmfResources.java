@@ -16,6 +16,28 @@
 
 package org.apache.jmeter.protocol.amf.util;
 
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jorphan.logging.LoggingManager;
+import org.apache.log.Logger;
+
 public class AmfResources {
-	// TODO
+	private static final Logger log = LoggingManager.getLoggerForClass();
+	
+	private static ResourceBundle resources = null;
+	
+	public static String getResString(String key) {
+		if (resources == null) {
+			resources = ResourceBundle.getBundle("org.apache.jmeter.protocol.amf.resources.messages", JMeterUtils.getLocale());
+		}
+		
+        try {
+            return resources.getString(key);
+        } catch (MissingResourceException e) {
+            log.warn("Missing resource string [res_key=" + key + "]", e);
+            return "[res_key=" + key + "]";
+        }
+	}
 }

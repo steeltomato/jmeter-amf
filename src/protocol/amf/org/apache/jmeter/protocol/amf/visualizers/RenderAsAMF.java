@@ -16,6 +16,7 @@
 
 package org.apache.jmeter.protocol.amf.visualizers;
 
+import org.apache.jmeter.protocol.amf.util.AmfResources;
 import org.apache.jmeter.protocol.amf.util.AmfXmlConverter;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.visualizers.ResultRenderer;
@@ -30,13 +31,13 @@ public class RenderAsAMF extends SamplerResultTab implements ResultRenderer {
     	results.setContentType("text/plain");
     	
     	if (!sampleResult.getContentType().equals("application/x-amf")) {
-    		results.setText("Invalid content type for AMF response: "+sampleResult.getContentType());
+    		results.setText(AmfResources.getResString("invalid_amf_content_type")+sampleResult.getContentType());
     	}
     	else if (sampleResult.getResponseData().length == 0) {
-    		results.setText("Empty response");
+    		results.setText(AmfResources.getResString("empty_response"));
     	}
     	else if (sampleResult.getResponseData().length > MAX_RESPONSE_SIZE * 1024) {
-    		results.setText("Response size too large for display, limit is "+MAX_RESPONSE_SIZE+"k");
+    		results.setText(AmfResources.getResString("response_too_large")+MAX_RESPONSE_SIZE+"k");
     	}
     	else {
     		String xml = AmfXmlConverter.convertAmfMessageToXml(sampleResult.getResponseData());
@@ -50,7 +51,7 @@ public class RenderAsAMF extends SamplerResultTab implements ResultRenderer {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "AMF"; // $NON-NLS-1$
+        return AmfResources.getResString("render_as_amf_title"); // $NON-NLS-1$
     }
 
 }

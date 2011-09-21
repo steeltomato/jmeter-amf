@@ -35,6 +35,7 @@ import org.apache.jmeter.gui.util.HorizontalPanel;
 import org.apache.jmeter.gui.util.VerticalPanel;
 import org.apache.jmeter.protocol.amf.sampler.AmfRequest;
 import org.apache.jmeter.protocol.amf.sampler.AmfRequestFactory;
+import org.apache.jmeter.protocol.amf.util.AmfResources;
 import org.apache.jmeter.protocol.http.config.gui.UrlConfigGui;
 import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
 import org.apache.jmeter.testelement.TestElement;
@@ -68,7 +69,7 @@ public class AmfRequestGui extends AbstractSamplerGui {
      * {@inheritDoc}
      */
     public String getStaticLabel() {
-        return "AMF Request"; // $NON-NLS-1$
+        return AmfResources.getResString("amf_request_title"); // $NON-NLS-1$
     }
 
 	@Override
@@ -156,17 +157,17 @@ public class AmfRequestGui extends AbstractSamplerGui {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                "AMF Request")); // $NON-NLS-1$
+        		AmfResources.getResString("amf_request_title"))); // $NON-NLS-1$
 
         List<String> values = new ArrayList<String>();
-        values.add("AMF"+String.valueOf(MessageIOConstants.AMF3));
+        values.add("AMF"+String.valueOf(MessageIOConstants.AMF3)); // $NON-NLS-1$
 
         objectEncodingCombo = new JComboBox(values.toArray());
         objectEncodingCombo.setEditable(false);
         
         panel.add(objectEncodingCombo);
         
-        JButton editXml = new JButton("Edit XML");
+        JButton editXml = new JButton(AmfResources.getResString("edit_xml_btn"));
         editXml.addActionListener(new ActionListener() {
 			@SuppressWarnings("serial")
 			public void actionPerformed(ActionEvent e) {
@@ -193,6 +194,6 @@ public class AmfRequestGui extends AbstractSamplerGui {
     }
     
     private void updateXmlBytes() {
-    	xmlSize.setText("("+amfXml.length()+" chars)");
+    	xmlSize.setText("("+amfXml.length()+" chars)"); // $NON-NLS-1$
     }
 }

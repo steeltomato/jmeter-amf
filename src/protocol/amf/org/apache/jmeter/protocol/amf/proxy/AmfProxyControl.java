@@ -64,7 +64,9 @@ import org.apache.jmeter.testelement.property.JMeterProperty;
 import org.apache.jmeter.testelement.property.PropertyIterator;
 import org.apache.jmeter.testelement.property.StringProperty;
 import org.apache.jmeter.threads.AbstractThreadGroup;
+import org.apache.jmeter.timers.ConstantTimer;
 import org.apache.jmeter.timers.Timer;
+import org.apache.jmeter.timers.gui.ConstantTimerGui;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
@@ -84,6 +86,7 @@ public class AmfProxyControl extends GenericController {
 
     private static final String ASSERTION_GUI = AssertionGui.class.getName();
 
+    private static final String TIMER_GUI = ConstantTimerGui.class.getName();
 
     private static final String TRANSACTION_CONTROLLER_GUI = TransactionControllerGui.class.getName();
 
@@ -131,6 +134,9 @@ public class AmfProxyControl extends GenericController {
     private static final String CONTENT_TYPE_EXCLUDE = "ProxyControlGui.content_type_exclude"; // $NON-NLS-1$
 
     private static final String CONTENT_TYPE_INCLUDE = "ProxyControlGui.content_type_include"; // $NON-NLS-1$
+    
+    private static final String ADD_DELAY = "ProxyControlGui.add_delay";
+    
     //- JMX file attributes
 
     // Must agree with the order of entries in the drop-down
@@ -165,6 +171,8 @@ public class AmfProxyControl extends GenericController {
     private boolean samplerDownloadImages;
 
     private boolean regexMatch = false;// Should we match using regexes?
+    
+    private boolean addDelay = false;
 
     /**
      * Tree node where the samples should be stored.
@@ -244,6 +252,12 @@ public class AmfProxyControl extends GenericController {
         regexMatch = b;
         setProperty(new BooleanProperty(REGEX_MATCH, b));
     }
+    
+    // kjhill
+    public void setAddDelay(boolean b) {
+    	addDelay = b;
+    	setProperty(new BooleanProperty(ADD_DELAY, b));
+    }
 
     public void setHttpsSpoof(boolean b) {
         setProperty(new BooleanProperty(HTTPS_SPOOF, b));
@@ -316,6 +330,11 @@ public class AmfProxyControl extends GenericController {
 
     public boolean getRegexMatch() {
         return getPropertyAsBoolean(REGEX_MATCH, false);
+    }
+    
+    // kjhill
+    public boolean getAddDelay() {
+    	return getPropertyAsBoolean(ADD_DELAY, false);
     }
 
     public boolean getHttpsSpoof() {
@@ -536,6 +555,18 @@ public class AmfProxyControl extends GenericController {
         ra.setName(JMeterUtils.getResString("assertion_title")); // $NON-NLS-1$
         ra.setTestFieldResponseData();
         model.addComponent(ra, node);
+    }
+    
+    /*
+     * Helper to make think time delay timers
+     * @Author kjhill
+     */
+    private void addTimer(JMeterTreeModel model, JMeterTreeNode node, long delay) throws IllegalUserActionException {
+    	ConstantTimer timer = new ConstantTimer();
+    	timer.setProperty(TestElement.GUI_CLASS, TIMER_GUI);
+    	timer.setDelay(Long.toString(delay));
+    	timer.setName("Delay by "+delay+"ms");
+    	model.addComponent(timer, node);
     }
 
     /*
@@ -762,7 +793,7 @@ public class AmfProxyControl extends GenericController {
     private void placeSampler(HTTPSamplerBase sampler, TestElement[] subConfigs, JMeterTreeNode myTarget) {
         try {
             JMeterTreeModel treeModel = GuiPackage.getInstance().getTreeModel();
-
+            
             boolean firstInBatch = false;
             long now = System.currentTimeMillis();
             long deltaT = now - lastTime;
@@ -808,6 +839,11 @@ public class AmfProxyControl extends GenericController {
             }
 
             JMeterTreeNode newNode = treeModel.addComponent(sampler, myTarget);
+            
+
+            if (addDelay && deltaT > 0) {
+            	addTimer(treeModel, newNode, deltaT);
+            }
 
             if (firstInBatch) {
                 if (addAssertions) {

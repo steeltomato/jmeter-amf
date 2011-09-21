@@ -35,6 +35,7 @@ import org.apache.jmeter.config.gui.ArgumentsPanel;
 import org.apache.jmeter.gui.util.HorizontalPanel;
 import org.apache.jmeter.gui.util.VerticalPanel;
 import org.apache.jmeter.protocol.amf.sampler.AmfRequest;
+import org.apache.jmeter.protocol.amf.util.AmfResources;
 import org.apache.jmeter.protocol.http.config.gui.UrlConfigGui;
 import org.apache.jmeter.testelement.AbstractTestElement;
 import org.apache.jmeter.testelement.TestElement;
@@ -87,7 +88,7 @@ public class AmfRequestDefaultsGui extends AbstractConfigGui implements ActionLi
      */
     @Override
     public String getStaticLabel() {
-        return "AMF Request Defaults"; // $NON-NLS-1$
+        return AmfResources.getResString("amf_request_defaults_title"); // $NON-NLS-1$
     }
 
     /**
@@ -150,7 +151,7 @@ public class AmfRequestDefaultsGui extends AbstractConfigGui implements ActionLi
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                "AMF Request Defaults")); // $NON-NLS-1$
+        		AmfResources.getResString("amf_request_defaults_title"))); // $NON-NLS-1$
 
         panel.add(getObjectEncodingPanel(), BorderLayout.NORTH);
         

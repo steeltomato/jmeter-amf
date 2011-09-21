@@ -140,11 +140,12 @@ public class AmfXmlConverter {
     	SerializationContext serializationContext = new SerializationContext();
     	
     	// Class aliases for deserialization, mimics registerClassAlias in Flex
+    	// TODO: Allow user configuration
     	ClassAliasRegistry aliases = ClassAliasRegistry.getRegistry();
     	aliases.registerAlias("DSC", "flex.messaging.messages.CommandMessageExt");
     	aliases.registerAlias("DSK", "flex.messaging.messages.AcknowledgeMessageExt");
     	
-    	// TODO: Maybe let users change these options if they want?
+    	// TODO: Maybe allow user configuration
     	serializationContext.createASObjectForMissingType = true;
     	//serializationContext.instantiateTypes = false;
     	

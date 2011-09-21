@@ -58,8 +58,7 @@ import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.gui.util.PowerTableModel;
 import org.apache.jmeter.gui.util.VerticalPanel;
 import org.apache.jmeter.protocol.amf.proxy.AmfProxyControl;
-import org.apache.jmeter.protocol.http.proxy.ProxyControl;
-import org.apache.jmeter.protocol.http.proxy.gui.ProxyControlGui;
+import org.apache.jmeter.protocol.amf.util.AmfResources;
 import org.apache.jmeter.protocol.http.sampler.HTTPSamplerFactory;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestPlan;
@@ -166,6 +165,8 @@ public class AmfProxyControlGui extends LogicControllerGui implements JMeterGUIC
     private static final String CHANGE_TARGET = "change_target"; // $NON-NLS-1$
 
     private JButton stop, start, restart;
+    
+    private JCheckBox addDelay; // kjhill
 
     //+ action names
     private static final String STOP = "stop"; // $NON-NLS-1$
@@ -242,6 +243,7 @@ public class AmfProxyControlGui extends LogicControllerGui implements JMeterGUIC
             model.setHttpsSpoofMatch(httpsMatch.getText());
             model.setContentTypeInclude(contentTypeInclude.getText());
             model.setContentTypeExclude(contentTypeExclude.getText());
+            model.setAddDelay(addDelay.isSelected()); // kjhill
             TreeNodeWrapper nw = (TreeNodeWrapper) targetNodes.getSelectedItem();
             if (nw == null) {
                 model.setTarget(null);
@@ -274,7 +276,7 @@ public class AmfProxyControlGui extends LogicControllerGui implements JMeterGUIC
      * {@inheritDoc}
      */
     public String getStaticLabel() {
-        return "AMF Proxy Server"; // $NON-NLS-1$
+        return AmfResources.getResString("amf_proxy_title"); // $NON-NLS-1$
     }
 
 	@Override
@@ -309,6 +311,8 @@ public class AmfProxyControlGui extends LogicControllerGui implements JMeterGUIC
         httpsMatch.setEnabled(httpsSpoof.isSelected()); // Only valid if Spoof is selected
         contentTypeInclude.setText(model.getContentTypeInclude());
         contentTypeExclude.setText(model.getContentTypeExclude());
+        
+        addDelay.setSelected(model.getAddDelay()); // kjhill
 
         reinitializeTargetCombo();// Set up list of potential targets and
                                     // enable listener
@@ -547,6 +551,11 @@ public class AmfProxyControlGui extends LogicControllerGui implements JMeterGUIC
         regexMatch.setSelected(false);
         regexMatch.addActionListener(this);
         regexMatch.setActionCommand(ENABLE_RESTART);
+        
+        addDelay = new JCheckBox(AmfResources.getResString("proxy_delay")); // $NON-NLS-1$
+        addDelay.setSelected(false);
+        addDelay.addActionListener(this);
+        addDelay.setActionCommand(ENABLE_RESTART);
 
         VerticalPanel mainPanel = new VerticalPanel();
         mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
@@ -556,7 +565,8 @@ public class AmfProxyControlGui extends LogicControllerGui implements JMeterGUIC
         nodeCreationPanel.add(httpHeaders);
         nodeCreationPanel.add(addAssertions);
         nodeCreationPanel.add(regexMatch);
-
+        nodeCreationPanel.add(addDelay);
+        
         HorizontalPanel targetPanel = new HorizontalPanel();
         targetPanel.add(createTargetPanel());
         targetPanel.add(createGroupingPanel());
