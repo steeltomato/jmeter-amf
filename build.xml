@@ -60,6 +60,9 @@
 				<path refid="classpath" />
 			</classpath>
 		</javac>
+		<copy todir="${build.amf}">
+			<fileset dir="${src.dir}" excludes="**/*.java" />
+		</copy>
 	</target>
 	
 	<target name="package" depends="init, compile" description="JAR the plugin">
