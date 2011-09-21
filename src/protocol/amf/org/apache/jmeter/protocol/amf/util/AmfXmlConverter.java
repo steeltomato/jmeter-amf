@@ -38,9 +38,11 @@ import flex.messaging.io.amf.AmfMessageDeserializer;
 import flex.messaging.io.amf.AmfMessageSerializer;
 import flex.messaging.io.amf.MessageBody;
 import flex.messaging.io.amf.MessageHeader;
+import flex.messaging.messages.AcknowledgeMessage;
 import flex.messaging.messages.AcknowledgeMessageExt;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.CommandMessageExt;
+import flex.messaging.messages.ErrorMessage;
 import flex.messaging.messages.RemotingMessage;
 
 public class AmfXmlConverter {
@@ -175,6 +177,8 @@ public class AmfXmlConverter {
 			xstream.alias("MessageBody", MessageBody.class);
 			xstream.alias("RemotingMessage", RemotingMessage.class);
 			xstream.alias("CommandMessage", CommandMessage.class);
+			xstream.alias("AcknowledgeMessage", AcknowledgeMessage.class);
+			xstream.alias("ErrorMessage", ErrorMessage.class);
 			xstream.alias("ASObject", ASObject.class);
 			xstream.alias("DSC", CommandMessageExt.class);
 			xstream.alias("DSK", AcknowledgeMessageExt.class);

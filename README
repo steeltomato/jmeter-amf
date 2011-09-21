@@ -18,17 +18,19 @@ https://github.com/steeltomato/jmeter-amf/wiki/Donate
 ---
 
 * JMeter 2.x
-* Application that utilizes BlazeDS for AMF communication. 
-  * Want to see more libraries supported? Let me know in the issue tracker.
+* BlazeDS libraries
+* Optional: JAR containing all classes used for remoting
+  * Provides cleaner, more reliable XML
 
  Installation
 ---
 
 1. Click Downloads and grab the latest JMeter-AMF package.
 
-2. Copy jmeter-amf.jar to jmeter/lib/ext.
+2. Copy JMeter-AMF.jar to jmeter/lib/ext.
 
-3. Download the version of BlazeDS that your application uses and copy blazeds-common.jar and blazeds-core.jar to jmeter/lib/ext.
+3. Download BlazeDS and copy blazeds-common.jar and blazeds-core.jar to jmeter/lib/ext.
+  * http://opensource.adobe.com/wiki/display/blazeds/Downloads
 
  Credits
 ---
