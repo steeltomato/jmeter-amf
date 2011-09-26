@@ -30,6 +30,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.jmeter.config.Arguments;
+import org.apache.jmeter.protocol.amf.util.AmfResources;
 import org.apache.jmeter.protocol.amf.util.AmfXmlConverter;
 import org.apache.jmeter.protocol.http.control.CacheManager;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampleResult;
@@ -42,6 +43,7 @@ import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testelement.property.JMeterProperty;
 import org.apache.jmeter.testelement.property.TestElementProperty;
+import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.jorphan.util.JOrphanUtils;
@@ -58,14 +60,13 @@ public class AmfRequest extends HTTPSampler2 implements Interruptible {
     private static final Logger log = LoggingManager.getLoggerForClass();
 
     public static final String RESPONSE_CODE_200 = "200"; // $NON-NLS-1$
-    
-    public static final String AMF_CONTENT_TYPE = "application/x-amf"; // $NON-NLS-1$
 
     // Properties
     public static final String AMFXML = "AmfSampler.amfxml"; // $NON-NLS-1$
     public static final String RAWAMF = "AmfSampler.rawamf"; // $NON-NLS-1$
     public static final String OBJECT_ENCODING_VERSION = "AmfSampler.objectEncoding"; // $NON-NLS-1$
     public static final String PROPERTY_OVERRIDES = "AmfSampler.property_overrides"; // $NON-NLS-1$
+    public static final String RESPONSE_VAR = "AmfSampler.resVar"; // $NON-NLS-1$
 
     public void setAmfXml(String amfXml) {
         setProperty(AMFXML, amfXml);
@@ -90,6 +91,14 @@ public class AmfRequest extends HTTPSampler2 implements Interruptible {
             setPropertyOverrides(args);
         }
         return args;
+    }
+    
+    public String getResponseVar() {
+    	return getPropertyAsString(RESPONSE_VAR);
+    }
+    
+    public void setResponseVar(String resVar) {
+    	setProperty(RESPONSE_VAR, resVar);
     }
 
     /**
@@ -135,7 +144,7 @@ public class AmfRequest extends HTTPSampler2 implements Interruptible {
 
         PostMethod httpMethod = new PostMethod(urlStr);
 
-        String contentType = "application/x-amf";
+        String contentType = AmfResources.getResString("amf_content_type");
         
         String amfXml = getAmfXml();
         
@@ -242,6 +251,19 @@ public class AmfRequest extends HTTPSampler2 implements Interruptible {
             JOrphanUtils.closeQuietly(instream);
             if (httpMethod != null) {
                 httpMethod.releaseConnection();
+            }
+            
+            // Post Process the XML into 
+            //   TODO: Make sure this doesn't change response times
+            String resVar = getResponseVar();
+            if (resVar != null && !resVar.isEmpty() && res.getBytes() > 0) {
+            	log.debug("Decoding response and saving in ${"+resVar+"}");
+            	
+            	// Decode response
+            	String amfResXml = AmfXmlConverter.convertAmfMessageToXml(res.getResponseData());
+            	
+            	JMeterVariables variables = JMeterContextService.getContext().getVariables();
+            	variables.put(resVar, amfResXml);
             }
         }
     }

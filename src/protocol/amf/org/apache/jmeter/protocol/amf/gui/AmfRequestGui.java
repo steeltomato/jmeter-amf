@@ -26,10 +26,12 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.apache.jmeter.gui.util.HorizontalPanel;
 import org.apache.jmeter.gui.util.VerticalPanel;
@@ -60,6 +62,8 @@ public class AmfRequestGui extends AbstractSamplerGui {
     private StringBuffer amfXml;
     
     private JLabel xmlSize;
+    
+    private JTextField resVar;
 
     public AmfRequestGui() {
         init();
@@ -107,6 +111,7 @@ public class AmfRequestGui extends AbstractSamplerGui {
         amfXml.setLength(0);
         amfXml.append(element.getPropertyAsString(AmfRequest.AMFXML));
         objectEncodingCombo.setSelectedItem(element.getPropertyAsString(AmfRequest.OBJECT_ENCODING_VERSION));
+        resVar.setText(element.getPropertyAsString(AmfRequest.RESPONSE_VAR));
         
         updateXmlBytes();
     }
@@ -132,6 +137,7 @@ public class AmfRequestGui extends AbstractSamplerGui {
         
         element.setProperty(AmfRequest.OBJECT_ENCODING_VERSION, String.valueOf(objectEncodingCombo.getSelectedItem()));
         element.setProperty(AmfRequest.AMFXML, amfXml.toString(), "");
+        element.setProperty(AmfRequest.RESPONSE_VAR, resVar.getText());
     }
 
     /**
@@ -155,9 +161,17 @@ public class AmfRequestGui extends AbstractSamplerGui {
     
     protected final JPanel getAmfRequestPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        JPanel leftPanel = new JPanel();
+        JPanel rightPanel = new JPanel();
+
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
         		AmfResources.getResString("amf_request_title"))); // $NON-NLS-1$
+
+        panel.setLayout(new BorderLayout());
+        panel.add(leftPanel, BorderLayout.LINE_START);
+        panel.add(rightPanel, BorderLayout.LINE_END);
+        
+        leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
 
         List<String> values = new ArrayList<String>();
         values.add("AMF"+String.valueOf(MessageIOConstants.AMF3)); // $NON-NLS-1$
@@ -165,19 +179,27 @@ public class AmfRequestGui extends AbstractSamplerGui {
         objectEncodingCombo = new JComboBox(values.toArray());
         objectEncodingCombo.setEditable(false);
         
-        panel.add(objectEncodingCombo);
+        leftPanel.add(objectEncodingCombo);
         
-        JButton editXml = new JButton(AmfResources.getResString("edit_xml_btn"));
+        JButton editXml = new JButton(AmfResources.getResString("edit_xml_btn")); // $NON-NLS-1$
         editXml.addActionListener(new ActionListener() {
 			@SuppressWarnings("serial")
 			public void actionPerformed(ActionEvent e) {
         		openXmlEditor();
         	}
         });
-        panel.add(editXml);
+        leftPanel.add(editXml);
         
         xmlSize = new JLabel();
-        panel.add(xmlSize);
+        leftPanel.add(xmlSize);
+        
+        rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        
+        rightPanel.add(new JLabel(AmfResources.getResString("res_var"))); // $NON-NLS-1$
+        
+        resVar = new JTextField();
+        resVar.setPreferredSize(new Dimension(100, 20));
+        rightPanel.add(resVar);
         
         return panel;
     }
@@ -194,6 +216,6 @@ public class AmfRequestGui extends AbstractSamplerGui {
     }
     
     private void updateXmlBytes() {
-    	xmlSize.setText("("+amfXml.length()+" chars)"); // $NON-NLS-1$
+    	xmlSize.setText("("+amfXml.length()+" chars)");
     }
 }

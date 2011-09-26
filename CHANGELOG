@@ -1,6 +1,9 @@
 Changelog
 ---------------------
 
+### Upcoming
+* Store response as XML in a variable for assertion and post-processing.
+
 ### Version 1.0
 * Better XML editing.
 * AMF rendering of response in the View Results Tree listener.
