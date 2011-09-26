@@ -6,12 +6,12 @@ using the AMF3 protocol. Main features:
 
 * Record AMF and HTTP traffic with the AMF Proxy Server
 * Translate AMF to XML for easy manipulation
-* Set override parameters to provide each virtual user with unique Client and Session IDs
+* Use variables to provide each virtual user with unique Client and Session IDs
+* Store response XML in a variable for assertion and value extraction
+* Review AMF responses as XML
 
-Homepage:
-http://github.com/steeltomato/jmeter-amf
-
-If this project saved you a ton of time and money, or if you just want to buy me a beer, please donate to help keep it going. 
+Did this project save your company a few bucks or a few man hours? Want to encourage me to add a new feature? 
+Just feel like buying me a beer? Please donate to help keep it going. 
 https://github.com/steeltomato/jmeter-amf/wiki/Donate
 
  Requirements
