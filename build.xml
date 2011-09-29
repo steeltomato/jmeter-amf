@@ -75,8 +75,8 @@
 	</target>
 
 	<target name="install" depends="init, clean, compile, package" description="Copy JMeter-AMF to the JMeter install directory">
-		<delete file="${install.dir}/JMeter-AMF.jar" />
-		<copy file="${pack.dir}/JMeter-AMF.jar" tofile="${install.dir}/JMeter-AMF.jar" />
+		<delete file="${lib.ext}/JMeter-AMF.jar" />
+		<copy file="${pack.dir}/JMeter-AMF.jar" tofile="${lib.ext}/JMeter-AMF.jar" />
 	</target>
 	
 	<target name="dist" depends="init, clean, compile, package" description="Build a tarball for the current version">
