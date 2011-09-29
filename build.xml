@@ -5,17 +5,17 @@
 		
 	<property file="build.properties" />
 	
+	<property name="jmeter.home" value="/opt/jmeter-2.5" />
+	
 	<property name="src.dir" value="src/protocol/amf" />
-	<property name="lib.dir" value="lib" />
-	<property name="lib.api" value="lib/api" />
-	<property name="lib.ext" value="lib/ext" />
+	<property name="lib.dir" value="${jmeter.home}/lib" />
+	<property name="lib.api" value="${jmeter.home}/lib/api" />
+	<property name="lib.ext" value="${jmeter.home}/lib/ext" />
 	<property name="build.dir" value="build" />
 	<property name="build.amf" value="build/protocol/amf" />
+	
 	<property name="dist.dir" value="dist" />
-	
-	<property name="install.dir" value="/opt/jmeter-2.5/lib/ext" />
-	
-	<property name="dest.jar" value="bin" />
+	<property name="pack.dir" value="bin" />
 	
 	<!-- Compilation Params -->
 	<property name="optimize" value="on" />
@@ -25,13 +25,16 @@
 	<property name="encoding" value="UTF-8" />
 	<property name="includeAntRuntime" value="false" />
 	
+	<property name="blazeds.version" value="4.0.0.14931" />
+	<property name="blazeds.core.jar" value="http://maven.springframework.org/external/com/adobe/blazeds/blazeds-core/${blazeds.version}/blazeds-core-${blazeds.version}.jar" />
+	<property name="blazeds.common.jar" value="http://maven.springframework.org/external/com/adobe/blazeds/blazeds-common/${blazeds.version}/blazeds-common-${blazeds.version}.jar" />
+	
 	<path id="srcpath">
 		<pathelement location="${src.dir}" />
 	</path>
 	
 	<path id="classpath">
 	    <fileset dir="${lib.dir}" includes="*.jar" />
-	    <fileset dir="${lib.api}" includes="*.jar" />
 		<fileset dir="${lib.ext}" includes="*.jar" />
 	</path>
 	
@@ -48,7 +51,7 @@
 	<target name="clean" depends="init">
 		<delete dir="${build.dir}" />
 		<delete dir="${dist.dir}" />
-		<delete file="${dest.jar}/JMeter-AMF.jar" />
+		<delete file="${pack.dir}/JMeter-AMF.jar" />
 	</target>
 	
 	<target name="compile" depends="init" description="Compile JMeter-AMF classes">
@@ -66,20 +69,27 @@
 	</target>
 	
 	<target name="package" depends="init, compile" description="JAR the plugin">
-		<jar jarfile="${dest.jar}/JMeter-AMF.jar"
+		<jar jarfile="${pack.dir}/JMeter-AMF.jar"
 			basedir="${build.amf}">
 	    </jar>
 	</target>
 
 	<target name="install" depends="init, clean, compile, package" description="Copy JMeter-AMF to the JMeter install directory">
 		<delete file="${install.dir}/JMeter-AMF.jar" />
-		<copy file="${dest.jar}/JMeter-AMF.jar" tofile="${install.dir}/JMeter-AMF.jar" />
+		<copy file="${pack.dir}/JMeter-AMF.jar" tofile="${install.dir}/JMeter-AMF.jar" />
 	</target>
 	
 	<target name="dist" depends="init, clean, compile, package" description="Build a tarball for the current version">
+		<exec command="git describe --tags" outputproperty="release.version" />
+		
 		<tar destfile="${dist.dir}/JMeter-AMF-${release.version}.tar.gz" 
 			 compression="gzip" 
 			 basedir="${basedir}"
-			 includes="${dest.jar}/JMeter-AMF.jar,README,LICENSE" />
+			 includes="${pack.dir}/JMeter-AMF.jar,README,LICENSE" />
+	</target>
+	
+	<target name="install-deps">
+		<get src="${blazeds.core.jar}" dest="${lib.ext}" skipexisting="true" />
+		<get src="${blazeds.common.jar}" dest="${lib.ext}" skipexisting="true" />
 	</target>
 </project>

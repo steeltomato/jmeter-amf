@@ -1,6 +1,9 @@
 Changelog
 ---------------------
 
+### Unreleased
+* Build process cleanup
+
 ### Version 1.1
 * Store response as XML in a variable for assertion and post-processing.
 

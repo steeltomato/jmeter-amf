@@ -76,6 +76,7 @@ public class AmfXmlConverterTest {
 		System.out.println("Result and original AMF have " + bytesMismatch + " bytes different");
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static RemotingMessage createTestObject() {
 		RemotingMessage msg = new RemotingMessage();
 		msg.setOperation("perform");
@@ -137,7 +138,7 @@ public class AmfXmlConverterTest {
 		RemotingMessage msg = new RemotingMessage();
 		msg.setOperation("perform");
 		
-		Map headers = new HashMap();
+		HashMap<String, String> headers = new HashMap<String,String>();
 		msg.setHeaders(headers);
 		
 		headers.put("DSid", "");
@@ -160,6 +161,7 @@ public class AmfXmlConverterTest {
 		return requestMessage;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void testASObjectConverter() {
 		ASObject asObj = new ASObject();
 		
