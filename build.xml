@@ -41,7 +41,7 @@
 	<target name="init">
 		<tstamp />
 		
-		<echo>JMeter-AMF v${release.version}</echo>
+		<echo>JMeter-AMF</echo>
 	</target>
 	
 	<target name="help">
