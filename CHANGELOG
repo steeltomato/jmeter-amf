@@ -1,8 +1,9 @@
 Changelog
 ---------------------
 
-### Unreleased
+### Version 1.2
 * Build process cleanup
+* Resolved issue with the AMF proxy being unable to sample command messages
 
 ### Version 1.1
 * Store response as XML in a variable for assertion and post-processing.

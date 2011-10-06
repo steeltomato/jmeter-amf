@@ -456,14 +456,13 @@ public class AmfRequestHdr {
                 sampler.parseArguments(postData.trim(), contentEncoding); //standard name=value postData
             } else if (postData.length() > 0) {
             	if (amf) {
-            		//sampler.setProperty(AmfSampler.RAWAMF, postData);
-            		
-            		// If AMF, attempt to convert it to XML
+            		//sampler.setProperty(AmfRequest.RAWAMF, postData);
+                    
+                    // If AMF, try to process the request and store it
                     if (postData != null && postData.length() > 0) {
-                    	String xml = AmfXmlConverter.convertAmfMessageToXml(postData.getBytes());
-                    	sampler.setProperty(AmfRequest.AMFXML, xml);
+    	            	String xml = AmfXmlConverter.convertAmfMessageToXml(postData.getBytes());
+    	            	sampler.setProperty(AmfRequest.AMFXML, xml);
                     }
-
             	}
             	else if (isBinaryContent(contentType)) {
                     try {

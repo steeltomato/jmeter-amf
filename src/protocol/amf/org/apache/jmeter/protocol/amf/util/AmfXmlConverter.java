@@ -144,7 +144,7 @@ public class AmfXmlConverter {
     	// Class aliases for deserialization, mimics registerClassAlias in Flex
     	// TODO: Allow user configuration
     	ClassAliasRegistry aliases = ClassAliasRegistry.getRegistry();
-    	aliases.registerAlias("DSC", "flex.messaging.messages.CommandMessageExt");
+    	//aliases.registerAlias("DSC", "flex.messaging.messages.CommandMessageExt"); // This causes errors in XStream during sampling (cannot cast byte to string)
     	aliases.registerAlias("DSK", "flex.messaging.messages.AcknowledgeMessageExt");
     	
     	// TODO: Maybe allow user configuration
