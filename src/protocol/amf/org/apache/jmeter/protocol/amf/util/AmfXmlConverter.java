@@ -137,15 +137,20 @@ public class AmfXmlConverter {
      * Converts complete AMF message to XML representation
      */
     public static String convertAmfMessageToXml(byte[] amf) {
+    	return AmfXmlConverter.convertAmfMessageToXml(amf, false);
+    }
+    public static String convertAmfMessageToXml(byte[] amf, boolean useAliasRegistry) {
     	XStream xs = getXStream();
     	ActionContext actionContext = new ActionContext();
     	SerializationContext serializationContext = new SerializationContext();
     	
     	// Class aliases for deserialization, mimics registerClassAlias in Flex
-    	// TODO: Allow user configuration
-    	ClassAliasRegistry aliases = ClassAliasRegistry.getRegistry();
-    	//aliases.registerAlias("DSC", "flex.messaging.messages.CommandMessageExt"); // This causes errors in XStream during sampling (cannot cast byte to string)
-    	aliases.registerAlias("DSK", "flex.messaging.messages.AcknowledgeMessageExt");
+    	//   Generally only used in rendering as it can cause serious problems for proxy sampling
+    	if (useAliasRegistry) {
+    		ClassAliasRegistry aliases = ClassAliasRegistry.getRegistry();
+    		aliases.registerAlias("DSC", "flex.messaging.messages.CommandMessageExt"); // This causes errors in XStream during proxy sampling (cannot cast byte to string)
+    		aliases.registerAlias("DSK", "flex.messaging.messages.AcknowledgeMessageExt");
+    	}
     	
     	// TODO: Maybe allow user configuration
     	serializationContext.createASObjectForMissingType = true;

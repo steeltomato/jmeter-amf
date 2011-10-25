@@ -65,6 +65,5 @@
 	<classpathentry kind="lib" path="lib/ext/ApacheJMeter_tcp.jar"/>
 	<classpathentry kind="lib" path="lib/junit/test.jar"/>
 	<classpathentry kind="lib" path="lib/ext/JMeterPlugins.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/WebServices"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
