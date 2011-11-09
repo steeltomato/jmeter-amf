@@ -83,10 +83,6 @@ public class ASObjectConverter extends AbstractCollectionConverter {
 		if (type != null) {
 			asObj.setType(type);
 		}
-		else {
-			// Don't know how to deal with this
-			return null;
-		}
 		
         populateMap(reader, context, asObj);
         
