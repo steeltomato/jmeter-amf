@@ -25,9 +25,11 @@
 	<property name="encoding" value="UTF-8" />
 	<property name="includeAntRuntime" value="false" />
 	
+	<!-- Deprecated, thanks a lot Adobe
 	<property name="blazeds.version" value="4.0.0.14931" />
 	<property name="blazeds.core.jar" value="http://maven.springframework.org/external/com/adobe/blazeds/blazeds-core/${blazeds.version}/blazeds-core-${blazeds.version}.jar" />
 	<property name="blazeds.common.jar" value="http://maven.springframework.org/external/com/adobe/blazeds/blazeds-common/${blazeds.version}/blazeds-common-${blazeds.version}.jar" />
+	-->
 	
 	<path id="srcpath">
 		<pathelement location="${src.dir}" />
@@ -88,8 +90,10 @@
 			 includes="${pack.dir}/JMeter-AMF.jar,README,LICENSE" />
 	</target>
 	
-	<target name="install-deps">
+	<!--
+	<target name="install-deps" description="Download dependencies">
 		<get src="${blazeds.core.jar}" dest="${lib.ext}" skipexisting="true" />
 		<get src="${blazeds.common.jar}" dest="${lib.ext}" skipexisting="true" />
 	</target>
+	-->
 </project>

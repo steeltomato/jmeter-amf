@@ -1,6 +1,9 @@
 Changelog
 ---------------------
 
+### Version 1.3
+* Gracefully handle sending actual ASObjects (Thanks jaisingh)
+
 ### Version 1.2
 * Build process cleanup
 * Resolved issue with the AMF proxy being unable to sample command messages
