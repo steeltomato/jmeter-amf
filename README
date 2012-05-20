@@ -17,7 +17,7 @@ https://github.com/steeltomato/jmeter-amf/wiki/Donate
  Requirements
 ---
 
-* JMeter 2.x
+* JMeter 2.6+
 * BlazeDS libraries
 * Optional: JAR containing all classes used for remoting
   * Provides cleaner, more reliable XML
