@@ -94,7 +94,7 @@ public class AmfRequestGui extends AbstractSamplerGui {
         centerPanel.add(getAmfRequestPanel());
         
         // TODO: Some sort of accordian to shrink the URL config area
-        urlConfigGui = new UrlConfigGui(false, false);
+        urlConfigGui = new UrlConfigGui(false, false, false);
         centerPanel.add(urlConfigGui);
         
         add(centerPanel, BorderLayout.CENTER);
